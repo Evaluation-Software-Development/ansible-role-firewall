@@ -9,7 +9,7 @@
 
 {% for service in firewall_services %}
 {% if (service.state | default("present")) != "absent" %}
--A INPUT -m state --state NEW {% if service.protocol is defined %}{% if service.protocol == "tcp" %}-m tcp{% endif %}{% endif %} -p {{ service.protocol | default ('tcp') }} --dport {{ service.name }} -j ACCEPT
+-A INPUT -m state --state NEW {% if service.protocol is defined %}{% if service.protocol == "tcp" %}-m tcp{% endif %}{% endif %}{% if service.from is defined %} -s {{ service.from }}{% endif %} -p {{ service.protocol | default ('tcp') }} --dport {{ service.name }} -j ACCEPT
 {% endif %}
 {% endfor %}
 

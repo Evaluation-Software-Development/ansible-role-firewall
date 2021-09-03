@@ -25,6 +25,7 @@
     rule: "{{ item.rule | default(firewall_default_rule) }}"
     port: "{{ item.name }}"
     proto: "{{ item.protocol | default(firewall_default_protocol) }}"
+    from_ip: "{{ item.from | default(omit) }}"
   loop: "{{ firewall_services }}"
   when:
     - ansible_connection not in [ "container", "docker", "community.docker.docker" ]
@@ -38,6 +39,7 @@
     rule: "{{ item.rule | default(firewall_default_rule) }}"
     port: "{{ item.name }}"
     proto: "{{ item.protocol | default(firewall_default_protocol) }}"
+    from_ip: "{{ item.from | default(omit) }}"
     delete: yes
   loop: "{{ firewall_services }}"
   when:
@@ -52,6 +54,7 @@
 - name: open ports (firewalld-port)
   ansible.posix.firewalld:
     port: "{{ item.name }}/{{ item.protocol | default(firewall_default_protocol) }}"
+    source: "{{ item.from | default(omit) }}"
     permanent: yes
     state: enabled
   loop: "{{ firewall_services }}"
@@ -68,6 +71,7 @@
 - name: close ports (firewalld-port)
   ansible.posix.firewalld:
     port: "{{ item.name }}/{{ item.protocol | default(firewall_default_protocol) }}"
+    source: "{{ item.from | default(omit) }}"
     permanent: yes
     state: disabled
   loop: "{{ firewall_services }}"
@@ -86,6 +90,7 @@
 - name: open ports (firewalld-service)
   ansible.posix.firewalld:
     service: "{{ item.name }}"
+    source: "{{ item.from | default(omit) }}"
     permanent: yes
     state: enabled
   loop: "{{ firewall_services }}"
@@ -102,6 +107,7 @@
 - name: close ports (firewalld-service)
   ansible.posix.firewalld:
     service: "{{ item.name }}"
+    source: "{{ item.from | default(omit) }}"
     permanent: yes
     state: disabled
   loop: "{{ firewall_services }}"
