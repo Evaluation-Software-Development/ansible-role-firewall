@@ -1,35 +1,36 @@
 ---
 
-- name: test if firewall_default_protocol is set correctly
+- name: assert | Test firewall_default_protocol
   ansible.builtin.assert:
     that:
       - firewall_default_protocol is defined
       - firewall_default_protocol is string
       - firewall_default_protocol in [ "tcp", "udp" ]
-    quiet: yes
+    quiet: true
 
-- name: test if firewall_default_rule is set correctly
+- name: assert | Test firewall_default_rule
   ansible.builtin.assert:
     that:
       - firewall_default_rule is defined
       - firewall_default_rule is string
       - firewall_default_rule in [ "allow", "deny" ]
-    quiet: yes
+    quiet: true
 
-- name: test if firewall_services is set correctly
+- name: assert | Test firewall_services
   ansible.builtin.assert:
     that:
       - firewall_services is iterable
-    quiet: yes
+    quiet: true
   when:
     - firewall_services is defined
 
-- name: test if non-numeric item in firewall_services is set correctly
+- name: assert | Test non-numeric item in firewall_services
   ansible.builtin.assert:
     that:
       - item.name is defined
       - item.name is string
-    quiet: yes
+      - item.name is not none
+    quiet: true
   loop: "{{ firewall_services }}"
   loop_control:
     label: "{{ item.name }}"
@@ -37,14 +38,14 @@
     - firewall_services is defined
     - item.name is not number
 
-- name: test if numeric item in firewall_services is set correctly
+- name: assert | Test numeric item in firewall_services
   ansible.builtin.assert:
     that:
       - item.name is defined
       - item.name is number
       - item.name > 0
       - item.name < 65536
-    quiet: yes
+    quiet: true
   loop: "{{ firewall_services }}"
   loop_control:
     label: "{{ item.name }}"
@@ -52,12 +53,12 @@
     - firewall_services is defined
     - item.name is number
 
-- name: test if item with state in firewall_services is set correctly
+- name: assert | Test item with state in firewall_services
   ansible.builtin.assert:
     that:
       - item.state is string
       - item.state in [ "absent", "present" ]
-    quiet: yes
+    quiet: true
   loop: "{{ firewall_services }}"
   loop_control:
     label: "{{ item.state | default('unset') }}"
