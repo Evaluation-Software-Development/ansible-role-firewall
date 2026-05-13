@@ -50,8 +50,8 @@ _firewall_service:
   Fedora: firewalld
   OracleLinux: firewalld
   openSUSE Leap: firewalld
-firewall_service: "{{ _firewall_service[ansible_distribution ~ '-' ~ ansible_distribution_major_version] | default (_firewall_service[ansible_distribution] | default (_firewall_service['default'] )) }}"
+firewall_service: "{{ _firewall_service[ansible_facts.distribution ~ '-' ~ ansible_facts.distribution_major_version] | default (_firewall_service[ansible_facts.distribution] | default (_firewall_service['default'] )) }}"
 
 _firewall_iptables_rulefile:
   Alpine: /etc/iptables/rules-save
-firewall_iptables_rulefile: "{{ _firewall_iptables_rulefile[ansible_distribution ~ '-' ~ ansible_distribution_major_version] | default(_firewall_iptables_rulefile[ansible_distribution] | default(_firewall_iptables_rulefile['default'] )) }}"
+firewall_iptables_rulefile: "{{ _firewall_iptables_rulefile[ansible_facts.distribution ~ '-' ~ ansible_facts.distribution_major_version] | default(_firewall_iptables_rulefile[ansible_facts.distribution] | default(_firewall_iptables_rulefile['default'] )) }}"
